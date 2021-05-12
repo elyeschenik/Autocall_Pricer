@@ -3,7 +3,7 @@ from Underlying import *
 from DataManager import *
 from Curve import *
 
-Nb_Sim = 1000
+Nb_Sim = 100
 DM = DataManager()
 Index_Name = "STOXX" #"STOXX" or "STOXX_DEC" (Stoxx 50 with decrement)
 

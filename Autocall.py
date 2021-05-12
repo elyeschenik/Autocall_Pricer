@@ -42,11 +42,13 @@ class Autocall:
             S_t_1 = S_t
 
             #Coupon barrier crossed
-            if S_t > self.Coupon_Barrier * self.Index.S_0:
+            if S_t >= self.Coupon_Barrier * self.Index.S_0:
                 Cumulated_Discounted_CF += self.Coupon * self.Curve.get_DF(t)
+            else:
+                if self.Snowball:
+                    Snowballed_CF += self.Coupon
 
-            if self.Snowball and S_t < self.Coupon_Barrier:
-                Snowballed_CF += self.Coupon
+
 
             #Recall barrier touched
             if S_t >= self.Barrier * self.Index.S_0:
@@ -59,12 +61,9 @@ class Autocall:
             if S_t <= self.KI_Barrier * self.Index.S_0 and not Flag_PDI:
                 Flag_PDI = True
 
-            if t == self.end_date and Flag_PDI:
-
-                    if self.Snowball:
-                        return Cumulated_Discounted_CF + (1 + Snowballed_CF) * self.Curve.get_DF(t)
-                    else:
-                        return Cumulated_Discounted_CF + (S_t / self.Index.S_0) * self.Curve.get_DF(t)
+            if t == self.end_date:
+                if  Flag_PDI:
+                    return Cumulated_Discounted_CF + (S_t / self.Index.S_0) * self.Curve.get_DF(t)
                 else:
                     return Cumulated_Discounted_CF + self.Curve.get_DF(t)
 
