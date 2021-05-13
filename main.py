@@ -3,7 +3,7 @@ from Underlying import *
 from DataManager import *
 from Curve import *
 
-Nb_Sim = 100
+Nb_Sim = 1000
 DM = DataManager()
 Index_Name = "STOXX" #"STOXX" or "STOXX_DEC" (Stoxx 50 with decrement)
 
@@ -18,5 +18,5 @@ Coupon = 0.05
 Snowball = False
 
 
-myAutocall = Autocall(Index, discount_curve, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball)
-print(myAutocall.Compute(Nb_Sim))
+myAutocall = Autocall(Index, discount_curve, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball, Nb_Sim)
+print(myAutocall.Compute())

@@ -36,8 +36,10 @@ Freq = int(sht.range("C7").value) #in numer of times per year
 Coupon = sht.range("C9").value
 Snowball = convert_to_bool(sht.range("C8").value)
 
+type_of_vol = sht.range("C12").value
+
 def Read_Data():
-    global Nb_Sim, Index_Name, Index, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball
+    global Nb_Sim, Index_Name, Index, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball, type_of_vol
     Nb_Sim = int(sht.range("C13").value)
 
     Index_Name = dict_names[sht.range("C11").value]  # "STOXX" or "STOXX_DEC" (Stoxx 50 with decrement)
@@ -54,6 +56,9 @@ def Read_Data():
 
 def Compute_Price():
     Read_Data()
-    myAutocall = Autocall(Index, discount_curve, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball)
-    price = myAutocall.Compute(Nb_Sim)
+    myAutocall = Autocall(Index, discount_curve, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball, Nb_Sim, type_of_vol)
+    price, eps = myAutocall.Compute()
+    average_mat = myAutocall.Expected_Maturity()
     sht.range("C15").value = price
+    sht.range("C16").value = '[{:.2f}%,{:.2f}%]'.format((price - eps)*100, (price + eps)*100)
+    sht.range("C17").value = average_mat
