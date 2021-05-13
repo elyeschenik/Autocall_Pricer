@@ -32,6 +32,6 @@ class DataManager:
         T_list = (self.df_call.columns - datetime(2021, 4, 7)).days / 365
         TT, KK = np.meshgrid(T_list, K_list)
 
-        self.f_call = interpolate.interp2d(TT, KK, self.df_call.values.astype("float"), kind='cubic')
-        self.f_put = interpolate.interp2d(TT, KK, self.df_call.values.astype("float"), kind='cubic')
+        self.f_call = interpolate.interp2d(TT, KK, self.df_call.values.astype("float"), kind='linear')
+        self.f_put = interpolate.interp2d(TT, KK, self.df_put.values.astype("float"), kind='linear')
 
