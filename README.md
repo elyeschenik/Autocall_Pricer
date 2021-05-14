@@ -19,6 +19,8 @@ Required packages: numpy, pandas, datetime, matplotlib, xlwings, scipy
 
 Please install xlwings: https://docs.xlwings.org/en/stable/
 
+Make sure you have the xlwings addin included. 
+
 Open the excel file: « Exam Data.xlsm » and you can directly use the pricer in the sheet « Excel Connect ».
 
 ## Interactive Interface Use :
