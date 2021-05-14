@@ -23,7 +23,13 @@ class Autocall:
         self.start_date = datetime(2021,4,7)
         self.end_date = datetime(self.start_date.year + Maturity,self.start_date.month,self.start_date.day)
 
-        self.Observation_Dates =  [self.start_date + timedelta(days = int(i * 365 / self.Freq)) for i in range(Maturity * self.Freq - 1)] + [self.end_date]
+        self.Observation_Dates =  [self.start_date + timedelta(days = int(i * 365 / self.Freq)) for i in range(Maturity * self.Freq)] + [self.end_date]
+
+        for i in range(len(self.Observation_Dates)):
+            while self.Observation_Dates[i].weekday() in [5,6]:
+                self.Observation_Dates[i] = self.Observation_Dates[i] + timedelta(days = 1)
+
+
 
         self.r_tot = self.Curve.get_Forward(self.start_date,self.end_date)
 
@@ -45,7 +51,7 @@ class Autocall:
             # underlying dynamics
             t = self.all_dates[i]
             t_1 = self.all_dates[i - 1]
-            dt = (t - t_1).days/252
+            dt = 1/252
             r = self.Curve.get_Forward(t_1,t)
             S[:,i] = self.Index.Simulate(S[:,i-1], r, self.end_date, dt, self.type_of_vol, self.r_tot, Nb_Sim, U, i)
         self.S = S
@@ -57,7 +63,6 @@ class Autocall:
 
     def Payoff(self, sim):
         """Compute the payoff for one simulation"""
-        S_t_1 = self.Index.S_0
         Cumulated_Discounted_CF = 0
         Snowballed_CF = 0
         Flag_PDI = False
@@ -88,14 +93,15 @@ class Autocall:
                     if self.Snowball:
                         return  Cumulated_Discounted_CF + (1 + Snowballed_CF) * self.Curve.get_DF(t)
                     else:
-                        return Cumulated_Discounted_CF + self.Curve.get_DF(t)
+                        return Cumulated_Discounted_CF + 1 * self.Curve.get_DF(t)
 
                 if t == self.end_date:
                     self.recall_dates.append((t - self.start_date).days / 365)
+                    flag_touch_snowball = self.Snowball and S_t >= self.Coupon_Barrier * self.Index.S_0
                     if Flag_PDI:
-                        return Cumulated_Discounted_CF + (S_t / self.Index.S_0) * self.Curve.get_DF(t)
+                        return Cumulated_Discounted_CF + (flag_touch_snowball * Snowballed_CF + (S_t / self.Index.S_0)) * self.Curve.get_DF(t)
                     else:
-                        return Cumulated_Discounted_CF + self.Curve.get_DF(t)
+                        return Cumulated_Discounted_CF + (1 + flag_touch_snowball * Snowballed_CF) * self.Curve.get_DF(t)
 
 
     def Compute(self):

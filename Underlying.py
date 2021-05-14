@@ -24,12 +24,11 @@ class Underlying:
 
 
     def Compute_Implied_Vol(self,S_t_1, curr_date, r, K, end_date, isCall):
-        #TODO compute the implied vol correctly
         T = (end_date - curr_date).days/365
         if isCall:
-            p = self.DM.f_call(T,K)[0] * self.S_0
+            p = self.DM.f_call(T,K)[0] * S_t_1
         else:
-            p = self.DM.f_put(T,K)[0] * self.S_0
+            p = self.DM.f_put(T,K)[0] * S_t_1
         a, b = 0.000001, 1
         f = lambda sigma: self.BSClosedForm(S_t_1, K, r, 0.029, sigma, T, isCall) - p
         vol = optimize.brentq(f, a, b)
