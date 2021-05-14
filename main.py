@@ -15,7 +15,7 @@ Coupon_Barrier = 0.9
 KI_Barrier = 0.7
 Freq = 1 #in numer of times per year
 Coupon = 0.05
-Snowball = False
+Snowball = True
 
 
 myAutocall = Autocall(Index, discount_curve, Maturity, Barrier, Coupon_Barrier, KI_Barrier, Freq, Coupon, Snowball, Nb_Sim)
